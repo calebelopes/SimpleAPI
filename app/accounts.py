@@ -1,7 +1,7 @@
 acc_dict = {
-    1: {'id': '100', 'balance': '1200'},
-    2: {'id': '200', 'balance': '1200'},
-    3: {'id': '300', 'balance': '1200'}
+    1: {'id': '100', 'balance': 1200},
+    2: {'id': '200', 'balance': 1200},
+    3: {'id': '300', 'balance': 1200}
 }
 
 
@@ -40,10 +40,10 @@ def deposit(req_input):
         acc_dict[new_id]['balance'] = req_input['amount']
         print(acc_dict)
         return acc_dict[new_id]
-    
+
 
 def withdrawal(req_input):
-    result = find_account(req_input['destination'])
+    result = find_account(req_input['origin'])
 
     if result != '404':
         new_balance = acc_dict[result]['balance'] - req_input['amount']
@@ -51,3 +51,13 @@ def withdrawal(req_input):
         return acc_dict[result]
     else:
         return 'ID NOT FOUND'
+
+
+def transfer(req_input):
+    print('gonna transfer')
+    var_aux = withdrawal(req_input)
+    if var_aux != 'ID NOT FOUND':
+        new_dict = {'origin': var_aux, 'deposit': (deposit(req_input))}
+        return new_dict
+    else:
+        return 'Origin account not found'

@@ -29,5 +29,6 @@ def event():
     elif input_req['type'] == 'withdrawal':
         return jsonify(accounts.withdrawal(input_req))
     elif input_req['type'] == 'transfer':
-        print()
-    return 'OK'
+        return jsonify(accounts.transfer(input_req))
+    else:
+        return 'Wrong parameter type'
