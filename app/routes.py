@@ -18,3 +18,16 @@ def reset():
 def balance():
     acc = request.args['id']
     return str(accounts.get_account_balance(acc))
+
+
+@app.route('/event', methods=['POST'])
+def event():
+    input_req = request.get_json(force=True)
+
+    if input_req['type'] == 'deposit':
+        return jsonify(accounts.deposit(input_req))
+    elif input_req['type'] == 'withdrawal':
+        return jsonify(accounts.withdrawal(input_req))
+    elif input_req['type'] == 'transfer':
+        print()
+    return 'OK'
