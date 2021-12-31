@@ -8,4 +8,7 @@ def index():
     return 'TEST SIMPLE API :: Calebe'
 
 
-
+@app.route('/reset', methods=['POST'])
+def reset():
+    accounts.acc_dict = {}
+    return 'Values have been reset'
