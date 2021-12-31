@@ -1,4 +1,4 @@
-from flask import request, jsonify
+from flask import request, jsonify, make_response
 from app import app, accounts
 
 
@@ -11,12 +11,12 @@ def index():
 @app.route('/reset', methods=['POST'])
 def reset():
     accounts.acc_dict = {}
-    return 'Values have been reset'
+    return 'OK'
 
 
 @app.route('/balance', methods=['GET'])
 def balance():
-    acc = request.args['id']
+    acc = request.args['account_id']
     return str(accounts.get_account_balance(acc))
 
 
@@ -25,10 +25,16 @@ def event():
     input_req = request.get_json(force=True)
 
     if input_req['type'] == 'deposit':
-        return jsonify(accounts.deposit(input_req))
-    elif input_req['type'] == 'withdrawal':
-        return jsonify(accounts.withdrawal(input_req))
+        return jsonify(accounts.deposit(input_req)), 201
+    elif input_req['type'] == 'withdraw':
+        return jsonify(accounts.withdraw(input_req)), 201
     elif input_req['type'] == 'transfer':
-        return jsonify(accounts.transfer(input_req))
+        return jsonify(accounts.transfer(input_req)), 201
     else:
         return 'Wrong parameter type'
+
+
+@app.errorhandler(404)
+def not_found(error):
+    print(error)
+    return '0', 404

@@ -1,8 +1,7 @@
-acc_dict = {
-    1: {'id': '100', 'balance': 1200},
-    2: {'id': '200', 'balance': 1200},
-    3: {'id': '300', 'balance': 1200}
-}
+from flask import abort
+
+
+acc_dict = {}
 
 
 def find_account(target):
@@ -23,7 +22,7 @@ def get_account_balance(acc_id):
     if result != '404':
         return acc_dict[result]['balance']
     else:
-        return 'ID NOT FOUND'
+        return abort(404)
 
 
 def deposit(req_input):
@@ -32,32 +31,30 @@ def deposit(req_input):
     if result != '404':
         new_balance = acc_dict[result]['balance'] + req_input['amount']
         acc_dict[result]['balance'] = new_balance
-        return acc_dict[result]
+        return {'destination': acc_dict[result]}
     else:
         new_id = len(acc_dict) + 1
         acc_dict[new_id] = {}
         acc_dict[new_id]['id'] = req_input['destination']
         acc_dict[new_id]['balance'] = req_input['amount']
-        print(acc_dict)
-        return acc_dict[new_id]
+        return {'destination': acc_dict[new_id]}
 
 
-def withdrawal(req_input):
+def withdraw(req_input):
     result = find_account(req_input['origin'])
 
     if result != '404':
         new_balance = acc_dict[result]['balance'] - req_input['amount']
         acc_dict[result]['balance'] = new_balance
-        return acc_dict[result]
+        return {'origin': acc_dict[result]}
     else:
-        return 'ID NOT FOUND'
+        return abort(404)
 
 
 def transfer(req_input):
-    print('gonna transfer')
-    var_aux = withdrawal(req_input)
-    if var_aux != 'ID NOT FOUND':
-        new_dict = {'origin': var_aux, 'deposit': (deposit(req_input))}
-        return new_dict
-    else:
-        return 'Origin account not found'
+    return Merge(withdraw(req_input), deposit(req_input))
+
+
+def Merge(dict1, dict2):
+    res = dict1 | dict2
+    return res
