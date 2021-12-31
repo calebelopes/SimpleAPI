@@ -40,3 +40,14 @@ def deposit(req_input):
         acc_dict[new_id]['balance'] = req_input['amount']
         print(acc_dict)
         return acc_dict[new_id]
+    
+
+def withdrawal(req_input):
+    result = find_account(req_input['destination'])
+
+    if result != '404':
+        new_balance = acc_dict[result]['balance'] - req_input['amount']
+        acc_dict[result]['balance'] = new_balance
+        return acc_dict[result]
+    else:
+        return 'ID NOT FOUND'
